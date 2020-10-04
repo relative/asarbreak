@@ -7,7 +7,7 @@ const { readHeader, createHeader } = require('./convenience'),
 
 const program = new Command()
 program
-  .version('1.0.0')
+  .version(require('../package.json').version)
   .description('Break extraction of asar archives by electron/asar CLI')
   .usage('<input asar>')
   .option('-n, --no-backup', 'Overwrites the original asar archive')
