@@ -1,8 +1,9 @@
 /**
- * These functions are taken from
+ * The first two functions are taken from
  * https://github.com/electron/asar/blob/8a03eae1b888fbbe094d54f8d3e9fbc46188ee61/lib/disk.js
  */
-const pickle = require('chromium-pickle-js'),
+const crypto = require('crypto'),
+  pickle = require('chromium-pickle-js'),
   fs = require('fs')
 
 module.exports.readHeader = function readHeader(archive) {
@@ -41,3 +42,14 @@ module.exports.createHeader = function createHeader(header) {
 
   return Buffer.concat([sizeBuf, headerBuf])
 }
+
+module.exports.randomIntFromInterval = function randomIntFromInterval(
+  min,
+  max
+) {
+  // stolen from stackoverflow
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+module.exports.randomIdentifier = () =>
+  'uwu' + crypto.randomBytes(24).toString('hex')

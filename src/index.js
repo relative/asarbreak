@@ -1,4 +1,9 @@
-const { readHeader, createHeader } = require('./convenience'),
+const {
+    readHeader,
+    createHeader,
+    randomIntFromInterval,
+    randomIdentifier,
+  } = require('./convenience'),
   { Command } = require('commander'),
   buffer = require('buffer'),
   crypto = require('crypto'),
@@ -12,6 +17,12 @@ program
   .usage('<input asar>')
   .option('-n, --no-backup', 'Overwrites the original asar archive')
   .option('--no-delete', "Don't unlink the original asar")
+  .option(
+    '--break-windows',
+    'Adds invalid entries that will not be able to deleted by Windows Explorer after extraction',
+    false
+  )
+  .option('--no-invalid-entry', "Don't create an invalid entry")
   .option(
     '-o, --output [path]',
     'Output file path (defaults to overwrite <input>)'
@@ -30,31 +41,45 @@ function main() {
 
   console.log('[*] Reading header')
   let header = readHeader(source)
-
   if (options.duplicate) {
     console.log('[*] Duplicating entries in file table')
 
+    let newFiles = {}
     Object.keys(header.header.files).forEach((key) => {
-      let file = header.header.files[key]
-      file.size = Math.floor(Math.random() * buffer.constants.MAX_LENGTH) + 1
-      file.offset = '-1'
-      header.header.files['./' + key] = file
+      let file = { ...header.header.files[key] }
+      file.size = 1
+      file.offset = '0'
+      newFiles['./' + key] = file
     })
+    header.header.files = Object.assign({}, header.header.files, newFiles)
   }
 
-  console.log('[*] Adding invalid entry to file table')
-  // add invalid file to the file table
-  // adding the entry as early as possible prevents the CLI from extracting files
-  header.header.files = Object.assign(
-    {},
-    {
-      ['uwu' + crypto.randomBytes(6).toString('hex')]: {
-        size: buffer.constants.MAX_LENGTH,
-        offset: '4',
+  if (options.breakWindows) {
+    console.log('[*] Adding invalid entries to break Windows Explorer')
+    for (let i = 0; i < 500; i++) {
+      header.header.files[randomIdentifier() + ' '] = {
+        size: randomIntFromInterval(1024 * 1024 * 200, 1024 * 1024 * 700),
+        offset: '0',
+      }
+    }
+  }
+
+  if (options.invalidEntry) {
+    console.log('[*] Adding invalid entry to file table')
+
+    // add invalid file to the file table
+    // adding the entry as early as possible prevents the CLI from extracting files
+    header.header.files = Object.assign(
+      {},
+      {
+        [randomIdentifier()]: {
+          size: buffer.constants.MAX_LENGTH,
+          offset: '4',
+        },
       },
-    },
-    header.header.files
-  )
+      header.header.files
+    )
+  }
 
   console.log('[*] Building new asar header')
   let newHeader = createHeader(header.header)
