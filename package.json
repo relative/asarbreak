@@ -1,6 +1,6 @@
 {
   "name": "asarbreak",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "break extraction of asar archives using electron/asar cli",
   "main": "src/index.js",
   "repository": "git@github.com:uwu/asarbreak.git",
