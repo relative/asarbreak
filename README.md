@@ -30,6 +30,9 @@ asarbreak --help
       -V, --version        output the version number
       -n, --no-backup      Overwrites the original asar archive
       --no-delete          Don't unlink the original asar
+      --break-windows      Adds invalid entries that will not be able to deleted by Windows Explorer after extraction
+                          (default: false)
+      --no-invalid-entry   Don't create an invalid entry
       -o, --output [path]  Output file path (defaults to overwrite <input>)
       -d, --duplicate      Duplicates file entries to confuse extraction
       -h, --help           display help for command
