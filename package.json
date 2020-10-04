@@ -1,0 +1,20 @@
+{
+  "name": "asarbreak",
+  "version": "1.0.0",
+  "description": "break extraction of asar archives using electron/asar cli",
+  "main": "src/index.js",
+  "repository": "git@github.com:uwu/asarbreak.git",
+  "author": "relative <relative@riseup.net>",
+  "license": "GPL-3.0-or-later",
+  "files": [
+    "src",
+    "bin"
+  ],
+  "bin": {
+    "asarbreak": "./bin/asarbreak.js"
+  },
+  "dependencies": {
+    "chromium-pickle-js": "^0.2.0",
+    "commander": "^6.1.0"
+  }
+}
