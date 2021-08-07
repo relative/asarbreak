@@ -1,3 +1,3 @@
 #!/usr/bin/env node
 
-require('../src/index')
+console.log("More uwu, pls master")
